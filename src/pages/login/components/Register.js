@@ -3,21 +3,20 @@ import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { ClipLoader } from "react-spinners";
 import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
 
 import RegisterInput from "./registerInputs";
+import { register } from "../../../store/userSlice";
+import {
+  toggleRegisterModal,
+  handleRegisterChange,
+} from "../../../store/userSlice";
 
 export default function Register() {
-  const [user, setUser] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    password: "",
-    email: "",
-    bYear: new Date().getFullYear(),
-    bMonth: new Date().getMonth() + 1,
-    bDay: new Date().getDate(),
-    gender: "",
-  });
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.user.userData);
+  console.log(user);
   const {
     first_name,
     last_name,
@@ -28,9 +27,13 @@ export default function Register() {
     bDay,
     gender,
   } = user;
-  const handleRegisterChange = (e) => {
-    const { name, value } = e.target;
-    setUser({ ...user, [name]: value });
+  const handleChange = (e) => {
+    dispatch(
+      handleRegisterChange({
+        name: e.target.name,
+        value: e.target.value,
+      })
+    );
   };
   const yearTemp = new Date().getFullYear();
   const years = Array.from(new Array(108), (val, index) => yearTemp - index);
@@ -53,45 +56,46 @@ export default function Register() {
       .required(
         "Enter a combination of at least six numbers, letters and punctuation marks(such as ! and &)."
       )
-      .min(6, "Password must be atleast 6 characters.")
+      .min(8, "Password must be atleast 8 characters.")
       .max(36, "password can't be more than 36 characters."),
   });
   const [dateError, setDateError] = useState();
   const [genderError, setGenderError] = useState();
 
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  const registerSubmit = async () => {
-    try {
-      setLoading("true");
-      const { data } = await axios.post(`http://localhost:8000/register`, {
-        first_name,
-        last_name,
-        email,
-        password,
-        bYear,
-        bMonth,
-        bDay,
-        gender,
-      });
-      setError("");
-      setSuccess(data.message);
-      setLoading("false");
-      const {message, ...rest} = data
-    } catch (error) {
-      setLoading(false);
-      setSuccess("");
-      setError(error.response.data.message);
-    }
-  };
+  const error = useSelector((state) => state.user.isError);
+  const message = useSelector((state) => state.user.message);
+  const loading = useSelector((state) => state.user.isLoading);
+  //     try {
+  //       setLoading("true");
+  //       const { data } = await axios.post(`http://localhost:8000/register`, {
+  //         first_name,
+  //         last_name,
+  //         email,
+  //         password,
+  //         bYear,
+  //         bMonth,
+  //         bDay,
+  //         gender,
+  //       });
+  //       setError("");
+  //       setSuccess(data.message);
+  //       setLoading("false");
+  //       const { message, ...rest } = data;
+  //     } catch (error) {
+  //       setLoading(false);
+  //       setSuccess("");
+  //       setError(error.response.data.message);
+  //     }
+  //   };
 
   return (
     <div className="blur">
       <div className="register">
         <div className="register_header">
-          <i className="exit_icon"></i>
+          <i
+            onClick={() => dispatch(toggleRegisterModal())}
+            className="exit_icon"
+          ></i>
           <span>Sign Up</span>
           <span>it's quick and easy</span>
         </div>
@@ -121,7 +125,7 @@ export default function Register() {
                 "Please choose a gender. You can change who can see this later."
               );
             } else {
-              registerSubmit();
+              dispatch(register(user));
             }
           }}
         >
@@ -132,13 +136,13 @@ export default function Register() {
                   type="text"
                   placeholder="First Name"
                   name="first_name"
-                  onChange={handleRegisterChange}
+                  onChange={(e) => handleChange(e)}
                 />
                 <RegisterInput
                   type="text"
                   placeholder="Last Name"
                   name="last_name"
-                  onChange={handleRegisterChange}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_line">
@@ -146,7 +150,7 @@ export default function Register() {
                   type="text"
                   placeholder="Mobile number or email address"
                   name="email"
-                  onChange={handleRegisterChange}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_line">
@@ -154,7 +158,7 @@ export default function Register() {
                   type="password"
                   placeholder="New password"
                   name="password"
-                  onChange={handleRegisterChange}
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_col">
@@ -162,21 +166,27 @@ export default function Register() {
                   Date of birth <i className="info_icon"></i>
                 </div>
                 <div className="reg_grid">
-                  <select name="bDay" onChange={handleRegisterChange}>
+                  <select name="bDay" onChange={(e) => handleChange(e)}>
                     {days.map((day, index) => (
                       <option value={day} key={day}>
                         {day}
                       </option>
                     ))}
                   </select>
-                  <select name="bMonth" onChange={handleRegisterChange}>
+                  <select
+                    name="bMonth"
+                    onChange={(e) => handleChange(e)}
+                  >
                     {months.map((month, index) => (
                       <option value={month} key={month}>
                         {month}
                       </option>
                     ))}
                   </select>
-                  <select name="bYear" onChange={handleRegisterChange}>
+                  <select
+                    name="bYear"
+                    onChange={(e) => handleChange(e)}
+                  >
                     {years.map((year, index) => (
                       <option value={year} key={index}>
                         {year}
@@ -198,7 +208,7 @@ export default function Register() {
                       name="gender"
                       id="male"
                       value={"male"}
-                      onChange={handleRegisterChange}
+                      onChange={(e) => handleChange(e)}
                     />
                   </label>
                   <label htmlFor="female">
@@ -208,7 +218,7 @@ export default function Register() {
                       name="gender"
                       id="female"
                       value={"female"}
-                      onChange={handleRegisterChange}
+                      onChange={(e) => handleChange(e)}
                     />
                   </label>
                   <label htmlFor="custom">
@@ -218,7 +228,7 @@ export default function Register() {
                       name="gender"
                       id="custom"
                       value={"custom"}
-                      onChange={handleRegisterChange}
+                      onChange={(e) => handleChange(e)}
                     />
                   </label>
                 </div>
@@ -249,8 +259,11 @@ export default function Register() {
                 aria-label="Loading Spinner"
                 data-testid="loader"
               />
-              {error && <div className="error_message">{error}</div>}
-              {success && <div className="success_message">{success}</div>}
+              {error ? (
+                <div className="error_message">{message}</div>
+              ) : (
+                !error && <div className="success_message">{message}</div>
+              )}
             </Form>
           )}
         </Formik>
