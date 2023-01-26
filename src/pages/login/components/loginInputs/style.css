@@ -1,0 +1,40 @@
+.input_wrap {
+  position: relative;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.input_wrap input {
+  outline: none;
+  border: 1px solid var(--bg-third);
+  background: var(--bg-primary);
+  width: 100%;
+  height: 50px;
+  font-size: 17px;
+  border-radius: 10px;
+  padding-left: 10px;
+  color: var(--color-primary);
+}
+
+.input_wrap input:focus {
+  border-color: var(--blue-color);
+}
+
+.input_error_border {
+  border: 1px solid rgb(244, 77, 77) !important;
+}
+
+.input_wrap i {
+  position: absolute;
+  right: 5px;
+  top: 15px;
+  transform: scale(0.8);
+}
+
+.error_message {
+  color: rgb(244, 77, 77);
+  font-size: 14px;
+}
