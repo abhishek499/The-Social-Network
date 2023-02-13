@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
 import { ClipLoader } from "react-spinners";
-import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
+import Cookies from "js-cookie";
 
 import RegisterInput from "./registerInputs";
 import { register } from "../../../store/userSlice";
@@ -11,12 +11,18 @@ import {
   toggleRegisterModal,
   handleRegisterChange,
 } from "../../../store/userSlice";
+import { useNavigate } from "react-router";
 
 export default function Register() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const user = useSelector((state) => state.user.userData);
-  console.log(user);
+  //State fetching
+  const user = useSelector((state) => state.user.userData.register);
+  const error = useSelector((state) => state.user.isError);
+  const message = useSelector((state) => state.user.message.register);
+  const loading = useSelector((state) => state.user.isLoading);
+  const token = useSelector((state) => state.user.token);
   const {
     first_name,
     last_name,
@@ -32,8 +38,16 @@ export default function Register() {
       handleRegisterChange({
         name: e.target.name,
         value: e.target.value,
+        target: "register",
       })
     );
+  };
+  const redirect = () => {
+    setTimeout(() => {
+      Cookies.set("user", JSON.stringify(user));
+      dispatch(toggleRegisterModal());
+      navigate("/");
+    }, 2000);
   };
   const yearTemp = new Date().getFullYear();
   const years = Array.from(new Array(108), (val, index) => yearTemp - index);
@@ -61,33 +75,7 @@ export default function Register() {
   });
   const [dateError, setDateError] = useState();
   const [genderError, setGenderError] = useState();
-
-  const error = useSelector((state) => state.user.isError);
-  const message = useSelector((state) => state.user.message);
-  const loading = useSelector((state) => state.user.isLoading);
-  //     try {
-  //       setLoading("true");
-  //       const { data } = await axios.post(`http://localhost:8000/register`, {
-  //         first_name,
-  //         last_name,
-  //         email,
-  //         password,
-  //         bYear,
-  //         bMonth,
-  //         bDay,
-  //         gender,
-  //       });
-  //       setError("");
-  //       setSuccess(data.message);
-  //       setLoading("false");
-  //       const { message, ...rest } = data;
-  //     } catch (error) {
-  //       setLoading(false);
-  //       setSuccess("");
-  //       setError(error.response.data.message);
-  //     }
-  //   };
-
+  !error && token && redirect();
   return (
     <div className="blur">
       <div className="register">
@@ -102,14 +90,14 @@ export default function Register() {
         <Formik
           enableReinitialize
           initialValues={{
-            first_name,
-            last_name,
-            email,
-            password,
-            bYear,
-            bMonth,
-            bDay,
-            gender,
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            password: password,
+            bYear: bYear,
+            bMonth: bMonth,
+            bDay: bDay,
+            gender: gender,
           }}
           validationSchema={registerValidation}
           onSubmit={() => {
@@ -125,7 +113,7 @@ export default function Register() {
                 "Please choose a gender. You can change who can see this later."
               );
             } else {
-              dispatch(register(user));
+              dispatch(register());
             }
           }}
         >
@@ -136,13 +124,13 @@ export default function Register() {
                   type="text"
                   placeholder="First Name"
                   name="first_name"
-                  onChange={(e) => handleChange(e)}
+                  onInput={(e) => handleChange(e)}
                 />
                 <RegisterInput
                   type="text"
                   placeholder="Last Name"
                   name="last_name"
-                  onChange={(e) => handleChange(e)}
+                  onInput={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_line">
@@ -150,7 +138,7 @@ export default function Register() {
                   type="text"
                   placeholder="Mobile number or email address"
                   name="email"
-                  onChange={(e) => handleChange(e)}
+                  onInput={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_line">
@@ -158,7 +146,7 @@ export default function Register() {
                   type="password"
                   placeholder="New password"
                   name="password"
-                  onChange={(e) => handleChange(e)}
+                  onInput={(e) => handleChange(e)}
                 />
               </div>
               <div className="reg_col">
@@ -173,20 +161,14 @@ export default function Register() {
                       </option>
                     ))}
                   </select>
-                  <select
-                    name="bMonth"
-                    onChange={(e) => handleChange(e)}
-                  >
+                  <select name="bMonth" onChange={(e) => handleChange(e)}>
                     {months.map((month, index) => (
                       <option value={month} key={month}>
                         {month}
                       </option>
                     ))}
                   </select>
-                  <select
-                    name="bYear"
-                    onChange={(e) => handleChange(e)}
-                  >
+                  <select name="bYear" onChange={(e) => handleChange(e)}>
                     {years.map((year, index) => (
                       <option value={year} key={index}>
                         {year}
@@ -248,17 +230,21 @@ export default function Register() {
                   className="blue_btn open_signup"
                   style={{ height: "50px" }}
                 >
-                  Sign Up
+                  {loading ? (
+                    <ClipLoader
+                      color={"#fff"}
+                      loading={loading}
+                      // cssOverride={override}
+                      size={20}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  ) : (
+                    "Sign up"
+                  )}
                 </button>
               </div>
-              <ClipLoader
-                color={"#1876f2"}
-                loading={loading}
-                // cssOverride={override}
-                size={30}
-                aria-label="Loading Spinner"
-                data-testid="loader"
-              />
+
               {error ? (
                 <div className="error_message">{message}</div>
               ) : (

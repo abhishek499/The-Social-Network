@@ -61,7 +61,7 @@
 }
 
 .open_signup {
-  background: var(--green-color);
+  background: var(--green-color) !important;
   width: 70% !important;
   font-weight: 600 !important;
   font-size: 17px !important;
@@ -121,7 +121,7 @@
   padding: 7px 0;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
 }
 

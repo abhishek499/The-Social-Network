@@ -1,22 +1,36 @@
-import { Formik } from "formik";
-import { useState } from "react";
-import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Formik, Form } from "formik";
+import Cookies from "js-cookie";
+import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { ClipLoader } from "react-spinners";
 import * as Yup from "yup";
-import { toggleRegisterModal } from "../../../store/userSlice";
 
+import {
+  handleRegisterChange,
+  login,
+  toggleRegisterModal,
+} from "store/userSlice";
 import LoginInput from "./loginInputs";
 
 export default function LoginForm() {
   const dispatch = useDispatch();
-  const [login, setLogin] = useState({
-    email: "",
-    password: "",
-  });
+  const navigate = useNavigate();
+  const { email, password, ...user } = useSelector(
+    (state) => state.user.userData.login
+  );
+  const { isLoading, isError, token, message } = useSelector(
+    (state) => state.user
+  );
 
   const handleLoginChange = (e) => {
     const { name, value } = e.target;
-    setLogin({ ...login, [name]: value });
+    dispatch(
+      handleRegisterChange({
+        name: name,
+        value: value,
+        target: "login",
+      })
+    );
   };
   const loginValidation = Yup.object({
     email: Yup.string()
@@ -25,6 +39,7 @@ export default function LoginForm() {
       .max(100),
     password: Yup.string().required("Password is required."),
   });
+  token && navigate("/");
   return (
     <div className="login_wrap">
       <div className="login_1">
@@ -38,29 +53,50 @@ export default function LoginForm() {
           <Formik
             enableReinitialize
             initialValues={{
-              email: login.email,
-              password: login.password,
+              email: email,
+              password: password,
             }}
             validationSchema={loginValidation}
+            onSubmit={() => {
+              dispatch(login());
+            }}
           >
             {(formik) => (
-              <form>
+              <Form>
                 <LoginInput
                   type="text"
                   name="email"
                   placeholder={"Email address or phone number"}
-                  onChange={handleLoginChange}
+                  onInput={handleLoginChange}
                 />
                 <LoginInput
                   type="password"
                   name="password"
                   placeholder={"password"}
-                  onChange={handleLoginChange}
+                  onInput={handleLoginChange}
                 />
                 <button type="submit" className="blue_btn">
-                  Log in
+                  {isLoading ? (
+                    <ClipLoader
+                      color={"#fff"}
+                      loading={isLoading}
+                      // cssOverride={override}
+                      size={15}
+                      aria-label="Loading Spinner"
+                      data-testid="loader"
+                    />
+                  ) : (
+                    "Log in"
+                  )}
                 </button>
-              </form>
+                {isError ? (
+                  <div className="error_message">{message.login}</div>
+                ) : (
+                  !isError && (
+                    <div className="success_message">{message.login}</div>
+                  )
+                )}
+              </Form>
             )}
           </Formik>
           <Link to="/forgot" className="forgot_password">
