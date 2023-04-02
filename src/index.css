@@ -36,12 +36,12 @@ a {
   --shadow-inset: rgba(255, 255, 255, 0.5);
 }
 
-/* -----Buttons------ */
+/*----Buttons----*/
 .blue_btn {
   border: none;
   outline: none;
-  background-color: var(--blue-color);
-  padding: 0.5px 12px;
+  background: var(--blue-color);
+  padding: 8.5px 12px;
   border-radius: 7px;
   font-family: inherit;
   font-weight: 600;
@@ -53,19 +53,36 @@ a {
   gap: 6px;
   cursor: pointer;
 }
-
-/* -----Buttons----- */
+.gray_btn {
+  border: none;
+  outline: none;
+  background: var(--bg-secondary);
+  padding: 8.5px 12px;
+  border-radius: 7px;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 14px;
+  color: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+}
+/*----Buttons----*/
 .blur {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
-  bottom: 0;
   background: rgba(255, 255, 255, 0.768);
+  bottom: 0;
   z-index: 99;
 }
 
-/* -----Hover----- */
+/*----Buttons----*/
+
+/*-----Hovers-----*/
 .hover1:hover {
   background: var(--bg-secondary);
 }
@@ -75,17 +92,15 @@ a {
 .hover3:hover {
   background: #d4d6da3a;
 }
-
-/* -----Hover----- */
-
+/*-----Hovers-----*/
 .card {
   height: 500px;
   width: 500px;
   background: red;
 }
-/* -----Hover----- */
 
-/* -----Scrollbar----- */
+/*----Scrollbar----*/
+
 .scrollbar::-webkit-scrollbar {
   width: 8px;
 }
@@ -93,7 +108,7 @@ a {
   background: #aeaeafa1;
   border-radius: 5px;
 }
-/* -----Scrollbar----- */
+/*----Scrollbar----*/
 
 /*---Circles------*/
 .small_circle {

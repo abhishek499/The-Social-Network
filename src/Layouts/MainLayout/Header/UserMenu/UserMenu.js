@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { setVisibleMenu } from "store/headerSlice";
+import { logout } from "store/userSlice";
 import MenuItem from "./MenuItem";
 import SubUserMenu from "./SubUserMenu";
 
@@ -103,7 +104,7 @@ export default function UserMenu({ user }) {
               )
             }
           />
-          <div className="mmenu_item hover3">
+          <div className="mmenu_item hover3" onClick={() => dispatch(logout())}>
             <div className="small_circle">
               <i className="logout_filled_icon"></i>
             </div>

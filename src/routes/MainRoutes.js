@@ -1,10 +1,9 @@
 // project import
-import React from "react";
+import React, { Suspense } from "react";
 import LoaderComponent from "components/Loader/index";
 import PrivateRoute from "components/PrivateRoute/index";
 import MainLayout from "Layouts/MainLayout/index";
-// import Home from "pages/home";
-// import Profile from "pages/profile";
+import ActivateAccount from "pages/ActivateAccount/index";
 
 const Home = React.lazy(() => import("pages/home"));
 const Profile = React.lazy(() => import("pages/profile"));
@@ -19,9 +18,9 @@ const MainRoutes = {
       path: "/",
       element: (
         <PrivateRoute>
-          <LoaderComponent>
+          <Suspense fallback={<div>Loading...</div>}>
             <Home />
-          </LoaderComponent>
+          </Suspense>
         </PrivateRoute>
       ),
     },
@@ -29,9 +28,19 @@ const MainRoutes = {
       path: "profile",
       element: (
         <PrivateRoute>
-          <LoaderComponent>
+          <Suspense fallback={<div>Loading...</div>}>
             <Profile />
-          </LoaderComponent>
+          </Suspense>
+        </PrivateRoute>
+      ),
+    },
+    {
+      path: "activate/:token",
+      element: (
+        <PrivateRoute>
+          <Suspense fallback={<div>Loading...</div>}>
+            <ActivateAccount />
+          </Suspense>
         </PrivateRoute>
       ),
     },

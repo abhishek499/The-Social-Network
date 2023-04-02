@@ -87,7 +87,7 @@ function Header() {
           <span>{first_name || ""}</span>
         </Link>
         <div
-          className="circle_icon hover1"
+          className={`circle_icon hover1 ${showAllMenu && "active_header"}`}
           onClick={() => setShowAllMenu(!showAllMenu)}
           ref={allMenu}
         >
