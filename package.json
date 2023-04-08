@@ -8,6 +8,8 @@
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.2.4",
+    "emoji-picker-react": "^4.4.8",
+    "express-fileupload": "^1.4.0",
     "formik": "^2.2.9",
     "js-cookie": "^3.0.1",
     "react": "^17.0.2",

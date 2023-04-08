@@ -6,7 +6,9 @@ import LoginForm from "./components/LoginForm";
 import Register from "./components/Register";
 
 const Login = () => {
-  const isShown = useSelector(state => state.user.isShown)
+  console.log("hello world", process.env.REACT_APP_BACKEND_URL);
+
+  const isShown = useSelector((state) => state.user.isShown);
   return (
     <div className="login">
       <div className="login_wrapper">

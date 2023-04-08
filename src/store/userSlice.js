@@ -286,9 +286,12 @@ export const register = createAsyncThunk(
   async (user1, { getState, rejectWithValue }) => {
     try {
       const { user } = getState();
-      const { data } = await axios.post(`http://localhost:8000/register`, {
-        ...user.userData.register,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}register`,
+        {
+          ...user.userData.register,
+        }
+      );
       return data;
     } catch (error) {
       console.log(error.response.data.message);
@@ -303,10 +306,13 @@ export const login = createAsyncThunk(
     try {
       const { user } = getState();
       const { email, password } = user.userData.login;
-      const { data } = await axios.post(`http://localhost:8000/login`, {
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_BACKEND_URL}login`,
+        {
+          email,
+          password,
+        }
+      );
       return data;
     } catch (error) {
       console.log(error.response.data.message);
@@ -322,7 +328,7 @@ export const activate = createAsyncThunk(
       console.log(token);
       const { user } = getState();
       const { data } = await axios.post(
-        `http://localhost:8000/activate`,
+        `${process.env.REACT_APP_BACKEND_URL}activate`,
         { token },
         {
           headers: {
@@ -345,7 +351,7 @@ export const sendVerification = createAsyncThunk(
     try {
       const { user } = getState();
       const { data } = await axios.post(
-        `http://localhost:8000/sendVerification`,
+        `${process.env.REACT_APP_BACKEND_URL}sendVerification`,
         {},
         {
           headers: {
@@ -369,7 +375,7 @@ export const findUser = createAsyncThunk(
       const { user } = getState();
 
       const { data } = await axios.post(
-        `http://localhost:8000/findUser`,
+        `${process.env.REACT_APP_BACKEND_URL}findUser`,
         { email: user.findUser.email },
         {
           headers: {
@@ -392,7 +398,7 @@ export const sendResetEmail = createAsyncThunk(
       const { user } = getState();
 
       const { data } = await axios.post(
-        `http://localhost:8000/sendResetEmail`,
+        `${process.env.REACT_APP_BACKEND_URL}sendResetEmail`,
         { email: user.findUser.email },
         {
           headers: {
@@ -415,7 +421,7 @@ export const sendCode = createAsyncThunk(
       const { user } = getState();
 
       const { data } = await axios.post(
-        `http://localhost:8000/validateResetCode`,
+        `${process.env.REACT_APP_BACKEND_URL}validateResetCode`,
         { code: user.findUser.code, email: user.findUser.email },
         {
           headers: {
@@ -438,7 +444,7 @@ export const changePassword = createAsyncThunk(
       const { user } = getState();
 
       const { data } = await axios.post(
-        `http://localhost:8000/changePassword`,
+        `${process.env.REACT_APP_BACKEND_URL}changePassword`,
         { password: user.findUser.password, email: user.findUser.email },
         {
           headers: {
